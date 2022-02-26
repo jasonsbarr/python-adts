@@ -2,24 +2,14 @@ from abc import ABC
 from typing import Any
 
 class ADT(ABC):
-    def __setattr__(self):
-        raise ValueError("Cannot set values on an ADT instance")
-
-    def __delattr__(self):
-        raise ValueError("Cannot delete values on an ADT instance")
+    pass
 
 # set the __value__ property on an instance without its own fields
-def set_instance_value(instance, *args):
+def set_instance_value(instance, args):
     if len(args) == 1:
-        setattr(instance, "__value__", args[0])
+        setattr(instance, "value", args[0])
     elif len(args) > 1:
-        setattr(instance, "__value__", args)
-
-    @property
-    def _get_value(self):
-        return self.__value__
-
-    setattr(instance, value, _get_value)
+        setattr(instance, "value", args)
 
 
 # variants is a list of dictionaries that match the one returned by create_variant
@@ -34,7 +24,7 @@ def create_adt(type_name, *, variants=None, members=None):
     if not "__init_subclass__" in members:
         def init_subclass(cls):
             base_class = cls.__bases__[0]
-            if not hasattr(base_class, "__variants__");
+            if not hasattr(base_class, "__variants__"):
                 base_class.__variants__ = []
 
             base_class.__variants__.append(cls)
@@ -51,7 +41,7 @@ def create_adt(type_name, *, variants=None, members=None):
 
     tyrep = type(type_name, (ADT,), members)
 
-    if variants not None:
+    if not variants is None:
         gs = globals()
         for variant in variants:
             gs[variant["name"]] = type(variant["name"], (tyrep,), variant["members"])
@@ -70,7 +60,7 @@ def create_variant(variant_name, *, fields=None, members=None):
 
     if not "__init__" in members:
         def init(self, *args, **kwargs):
-            if fields not None:
+            if not fields is None:
                 for k, v in kwargs.items():
                     setattr(self, k, v)
 
