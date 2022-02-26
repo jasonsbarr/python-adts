@@ -8,6 +8,9 @@ class Setoid(ABC):
     def __eq__(self, other):
         return self.__class__.eq(self, other)
 
+    def __ne__(self, other):
+        return not self.__class__.eq(self, other)
+
 class Ord(Setoid):
     @classmethod
     @abstractmethod
