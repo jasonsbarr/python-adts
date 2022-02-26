@@ -89,6 +89,7 @@ def create_variant(variant_name, *, fields=None, members=None):
                 set_instance_value(self, args)
 
             setattr(self, "__type__", self.__class__)
+            setattr(self, "__variant__", self)
 
         members["__init__"] = init
 
