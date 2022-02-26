@@ -40,7 +40,6 @@ def create_adt(type_name, *, variants=None, members=None, global_constructors=Tr
         if not "__init__" in members:
             def init(self, *args):
                 set_instance_value(self, args)
-                setattr(self, "__type__", self)
 
             members["__init__"] = init
 
@@ -52,6 +51,7 @@ def create_adt(type_name, *, variants=None, members=None, global_constructors=Tr
 
 
     tyrep = type(type_name, tuple(supers), members)
+    setattr(tyrep, "__type__", tyrep)
 
     if not variants is None:
         for variant in variants:
