@@ -1,5 +1,31 @@
 from abc import ABC, abstractmethod
 
+class Setoid(ABC):
+    @classmethod
+    @abstractmethod
+    def eq(cls, instance, other)
+
+    def __eq__(self, other):
+        return self.__class__.eq(self, other)
+
+class Ord(Setoid):
+    @classmethod
+    @abstractmethod
+    def le(cls, instance, other)
+
+    def __le__(self, other):
+        return self.__class__.le(self, other)
+
+    def __gt__(self, other):
+        return not self.__class__.le(self, other)
+
+    def __ge__(self, other):
+        return not self.__class__.le(self, other) and not self.__class__.eq(self, other)
+
+    def __lt__(self, other):
+        return not self.__ge__(self, other)
+
+
 class Functor(ABC):
     @classmethod
     @abstractmethod
@@ -14,6 +40,10 @@ class SemiGroup(ABC):
     @classmethod
     @abstractmethod
     def concat(cls, instance, other)
+
+
+    def __add__(self, other):
+        return self.__class__.concat(self, other)
 
 class Monoid(SemiGroup):
     @classmethod
