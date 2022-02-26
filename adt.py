@@ -63,6 +63,8 @@ def create_adt(type_name, *, variants=None, members=None, global_constructors=Tr
                 calling_module = sys.modules[current_frame.f_back.f_globals['__name__']]
                 gs = calling_module.__dict__
                 gs[variant["name"]] = var
+                mod_gs = globals()
+                mod_gs[variant["name"]] = var
 
     return tyrep
 
