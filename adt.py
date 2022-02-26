@@ -1,5 +1,7 @@
 from abc import ABC
 from typing import Any
+import inspect
+import sys
 
 class ADT(ABC):
     pass
@@ -15,7 +17,9 @@ def set_instance_value(instance, args):
 # variants is a list of dictionaries that match the one returned by create_variant
 # members are data attributes and methods, including dunder methods, to be attached to the type representative
 # do not include variant names as method names, as these will be created as methods on the type representative
-def create_adt(type_name, *, variants=None, members=None):
+# global_constructors=True creates a separate class in the calling module for each variant
+# typeclasses are abstract classes that provide functions you must define on the type representative in members
+def create_adt(type_name, *, variants=None, members=None, global_constructors=True, typeclasses=None):
     if members is None:
         members = {}
 
@@ -36,15 +40,29 @@ def create_adt(type_name, *, variants=None, members=None):
         if not "__init__" in members:
             def init(self, *args):
                 set_instance_value(self, args)
+                setattr(self, "__type__", self)
 
             members["__init__"] = init
 
-    tyrep = type(type_name, (ADT,), members)
+    supers = [ADT]
+
+    if not typeclasses is None:
+        for tc in typeclasses:
+            supers.append(tc)
+
+
+    tyrep = type(type_name, tuple(supers), members)
 
     if not variants is None:
-        gs = globals()
         for variant in variants:
-            gs[variant["name"]] = type(variant["name"], (tyrep,), variant["members"])
+            var = type(variant["name"], (tyrep,), variant["members"])
+
+            # this is a fucking terrible idea and I probably shouldn't do it
+            if global_constructors:
+                current_frame = inspect.currentframe()
+                calling_module = sys.modules[current_frame.f_back.f_globals['__name__']]
+                gs = calling_module.__dict__
+                gs[variant["name"]] = var
 
     return tyrep
 
@@ -68,10 +86,9 @@ def create_variant(variant_name, *, fields=None, members=None):
                     setattr(self, fields[i], v)
 
             else:
-                if len(args) == 1:
-                    setattr(self, "__value__", args[0])
-                elif len(args) > 1:
-                    setattr(self, "__value__", args)
+                set_instance_value(self, args)
+
+            setattr(self, "__type__", self.__class__)
 
         members["__init__"] = init
 
