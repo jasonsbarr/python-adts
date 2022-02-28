@@ -22,3 +22,11 @@ def compose(*fns):
 
 def pipe(val, *fns):
     return compose(*fns)(val)
+
+py_type = type
+
+def type(*args)
+    if hasattr(args[0], "__type__") and len(args) == 1:
+        return args[0].__type__
+
+    return py_type(*args)
