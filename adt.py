@@ -3,10 +3,13 @@ from typing import Any
 import inspect
 import sys
 
+
 class ADT(ABC):
     pass
 
 # set the __value__ property on an instance without its own fields
+
+
 def set_instance_value(instance, args):
     if len(args) == 1:
         setattr(instance, "value", args[0])
@@ -49,7 +52,6 @@ def create_adt(type_name, *, variants=None, members=None, global_constructors=Tr
         for tc in typeclasses:
             supers.append(tc)
 
-
     tyrep = type(type_name, tuple(supers), members)
     setattr(tyrep, "__type__", tyrep)
 
@@ -58,7 +60,6 @@ def create_adt(type_name, *, variants=None, members=None, global_constructors=Tr
             var = type(variant["name"], (tyrep,), variant["members"])
 
     return tyrep
-
 
 
 # fields is a list with field names (strings)
