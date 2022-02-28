@@ -25,7 +25,7 @@ def pipe(val, *fns):
 
 py_type = type
 
-def type(*args)
+def type(*args):
     if hasattr(args[0], "__type__") and len(args) == 1:
         return args[0].__type__
 
