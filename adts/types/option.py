@@ -8,12 +8,35 @@ T = TypeVar("T")
 # | Some[T]
 # | None
 
+# superclass for defining shared special methods
 
-class Some(Variant[T]):
+
+class Optional(Variant[T]):
+    def __init__(self):
+        if self.__class__ == Optional:
+            raise TypeError("Cannot instantiate Optional class directly")
+
+    def __eq__(self, other):
+        match self:
+            case Some():
+                match other:
+                    case Some(value):
+                        return self.value == value
+                    case _:
+                        return False
+            case Nothing():
+                match other:
+                    case Nothing():
+                        return True
+                    case _:
+                        return False
+
+
+class Some(Optional[T]):
     pass
 
 
-class Nothing(Variant[NoneType]):
+class Nothing(Optional[NoneType]):
     pass
 
 
