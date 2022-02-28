@@ -1,5 +1,5 @@
 from ..variant import Variant
-from typing import TypeVar, TypeAlias, Union
+from typing import TypeVar, TypeAlias, Union, Callable
 from types import NoneType
 
 T = TypeVar("T")
@@ -20,5 +20,13 @@ class Nothing(Variant[NoneType]):
 Option: TypeAlias = Union[Some[T], Nothing]
 
 
-def of(value: Union[T, NoneType]) -> Option[T]:
+def of(value: Union[T, NoneType]) -> Option:
     return Nothing() if value == None else Some(value)
+
+
+def map(fn: Callable[[Option], Option], opt: Option):
+    match opt:
+        case Some():
+            return of(fn(opt.value))
+        case Nothing():
+            return opt
