@@ -31,6 +31,58 @@ class Optional(Variant[T]):
                     case _:
                         return False
 
+    def __le__(self, other):
+        match self:
+            case Some():
+                match other:
+                    case Some(value):
+                        return self.value <= value
+                    case _:
+                        return False
+            case Nothing():
+                match other:
+                    case Nothing():
+                        return True
+                    case _:
+                        return False
+
+    def __lt__(self, other):
+        match self:
+            case Some():
+                match other:
+                    case Some(value):
+                        return self.value < value
+                    case _:
+                        return False
+            case _:
+                return False
+
+    def __gt__(self, other):
+        match self:
+            case Some():
+                match other:
+                    case Some(value):
+                        return self.value > value
+                    case _:
+                        return False
+            case _:
+                return False
+
+    def __ge__(self, other):
+        match self:
+            case Some():
+                match other:
+                    case Some(value):
+                        return self.value >= value
+                    case _:
+                        return False
+            case Nothing():
+                match other:
+                    case Nothing():
+                        return True
+                    case _:
+                        return False
+
 
 class Some(Optional[T]):
     pass
