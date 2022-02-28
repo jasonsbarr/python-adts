@@ -57,15 +57,6 @@ def create_adt(type_name, *, variants=None, members=None, global_constructors=Tr
         for variant in variants:
             var = type(variant["name"], (tyrep,), variant["members"])
 
-            # this is a fucking terrible idea and I probably shouldn't do it
-            if global_constructors:
-                current_frame = inspect.currentframe()
-                calling_module = sys.modules[current_frame.f_back.f_globals['__name__']]
-                gs = calling_module.__dict__
-                gs[variant["name"]] = var
-                mod_gs = globals()
-                mod_gs[variant["name"]] = var
-
     return tyrep
 
 
