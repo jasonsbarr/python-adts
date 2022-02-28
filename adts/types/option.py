@@ -18,3 +18,7 @@ class Nothing(Variant[NoneType]):
 
 
 Option: TypeAlias = Union[Some[T], Nothing]
+
+
+def of(value: Union[T, NoneType]) -> Option[T]:
+    return Nothing() if value == None else Some(value)
