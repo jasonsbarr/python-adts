@@ -1,8 +1,10 @@
 from ..variant import Variant
+from ..decorators import curry
 from typing import TypeVar, TypeAlias, Union, Callable
 from types import NoneType
 
 T = TypeVar("T")
+T2 = TypeVar("T2")
 
 # type Option
 # | Some[T]
@@ -121,21 +123,30 @@ class Nothing(Optional[NoneType]):
 
 Option: TypeAlias = Union[Some[T], Nothing]
 
-
-# Monad
-def of(value: Union[T, NoneType]) -> Option:
-    return Nothing() if value == None else Some(value)
-
-
-def empty():
-    return Some()
-
 # Functor
 
 
-def map(fn: Callable[[Option], Option], opt: Option):
+@curry
+def map(fn: Callable[[T], T2], opt: Option):
     match opt:
         case Some():
             return of(fn(opt.value))
         case Nothing():
             return opt
+
+# Monoid
+
+
+def empty():
+    return Some()
+
+# Monad
+
+
+def of(value: Union[T, NoneType]) -> Option:
+    return Nothing() if value == None else Some(value)
+
+
+@curry
+def bind(fn: Callable[[Option], Option], opt: Option):
+    return fn(opt.value)
