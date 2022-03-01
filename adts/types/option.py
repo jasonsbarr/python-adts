@@ -91,12 +91,14 @@ class Optional(Variant[T]):
             raise TypeError("Can only add an Option to another Option")
 
         match self:
-            case Some():
+            case Some() if not self.value is None:
                 match other:
                     case Some(value):
                         return Some(self.value + value)
                     case Nothing():
                         return other
+            case Some() if self.value is None:
+                return other
             case Nothing():
                 return self
 
@@ -120,8 +122,15 @@ class Nothing(Optional[NoneType]):
 Option: TypeAlias = Union[Some[T], Nothing]
 
 
+# Monad
 def of(value: Union[T, NoneType]) -> Option:
     return Nothing() if value == None else Some(value)
+
+
+def empty():
+    return Some()
+
+# Functor
 
 
 def map(fn: Callable[[Option], Option], opt: Option):
