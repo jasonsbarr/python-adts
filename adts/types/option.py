@@ -149,4 +149,8 @@ def of(value: Union[T, NoneType]) -> Option:
 
 @curry
 def bind(fn: Callable[[Option], Option], opt: Option):
-    return fn(opt.value)
+    match opt:
+        case Some():
+            return fn(opt.value)
+        case Nothing():
+            return opt
