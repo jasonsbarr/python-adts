@@ -16,6 +16,7 @@ class Optional(Variant[T]):
         if self.__class__ == Optional:
             raise TypeError("Cannot instantiate Optional class directly")
 
+    # Setoid
     def __eq__(self, other):
         match self:
             case Some():
@@ -31,6 +32,7 @@ class Optional(Variant[T]):
                     case _:
                         return False
 
+    # Ord
     def __le__(self, other):
         match self:
             case Some():
@@ -83,13 +85,36 @@ class Optional(Variant[T]):
                     case _:
                         return False
 
+    # SemiGroup
+    def __add__(self, other):
+        if not isinstance(other, Optional):
+            raise TypeError("Can only add an Option to another Option")
+
+        match self:
+            case Some():
+                match other:
+                    case Some(value):
+                        return Some(self.value + value)
+                    case Nothing():
+                        return other
+            case Nothing():
+                return self
+
 
 class Some(Optional[T]):
-    pass
+    def __str__(self):
+        return f"Some({self.value})"
+
+    def __repr__(self):
+        return str(self)
 
 
 class Nothing(Optional[NoneType]):
-    pass
+    def __str__(self):
+        return "Nothing"
+
+    def __repr__(self):
+        return str(self)
 
 
 Option: TypeAlias = Union[Some[T], Nothing]
